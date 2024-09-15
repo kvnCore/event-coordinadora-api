@@ -4,7 +4,7 @@ const dotenv = require('dotenv');
 const eventRoutes = require('./routes/eventRoutes');
 const sequelize = require('./config/database');
 
-console.log("DB USER: ",process.env.DB_USER);  // Debe mostrar el valor de DB_USER
+console.log("DB USER: ",process.env.DB_USER); 
 
 dotenv.config();
 const app = express();

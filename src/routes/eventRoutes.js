@@ -8,5 +8,6 @@ router.get('/', eventController.getAllEvents);
 router.get('/:id', eventController.getEventById);
 router.put('/:id', eventController.updateEvent);
 router.delete('/:id', eventController.deleteEvent);
+router.post('/findNearSites/:id', eventController.findNearSites);
 
 module.exports = router;

@@ -17,6 +17,7 @@
     "express": "^4.21.0",
     "jsonwebtoken": "^9.0.2",
     "mysql2": "^3.11.2",
+    "node-fetch": "^3.3.2",
     "sequelize": "^6.37.3",
     "squel": "^5.13.0"
   },
