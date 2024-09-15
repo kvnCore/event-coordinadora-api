@@ -7,7 +7,7 @@ exports.getAllEvents = async (req, res) => {
     try {
         
         const events = await Event.findAll({
-            include: ['organizer']  
+            //include: ['organizer']  
         });
 
         res.status(200).json(events);
@@ -121,3 +121,4 @@ exports.findNearSites = async (req, res) => {
     });
 
 }
+
