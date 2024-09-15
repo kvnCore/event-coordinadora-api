@@ -4,6 +4,8 @@ const dotenv = require('dotenv');
 const eventRoutes = require('./routes/eventRoutes');
 const sequelize = require('./config/database');
 
+console.log("DB USER: ",process.env.DB_USER);  // Debe mostrar el valor de DB_USER
+
 dotenv.config();
 const app = express();
 
@@ -19,6 +21,7 @@ app.use((err, req, res, next) => {
 });
 
 // Conectar a la base de datos
+//console.log("sequelize",sequelize);
 sequelize.sync()
     .then(() => console.log('Database connected'))
     .catch(err => console.error('Database connection failed:', err));
