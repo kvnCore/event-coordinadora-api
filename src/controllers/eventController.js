@@ -3,6 +3,8 @@ require('dotenv').config();
 const Event = require('../models/eventModel');
 const Atendee = require('../models/atendeeModel'); 
 const connection = require('../config/database');
+const path = require('path');
+const xlsx = require('xlsx');
 
 
 exports.getAllEvents = async (req, res) => {
@@ -241,6 +243,36 @@ exports.getAttendanceByDay = async (req, res) => {
 
         // Devolvemos los resultados en formato JSON
         res.status(200).json(attendanceByDay);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+exports.uploadEventsFromExcel = async (req, res) => {
+    try {
+        // Asegúrate de que el archivo ha sido subido por multer
+        const filePath = path.join(__dirname, '../uploads', "req.file.filename");
+
+        // Leer el archivo Excel
+        const workbook = xlsx.readFile(filePath);
+        const sheetName = workbook.SheetNames[0];  // Leer la primera hoja
+        const sheet = workbook.Sheets[sheetName];
+
+        // Convertir la hoja de Excel a JSON
+        const eventsData = xlsx.utils.sheet_to_json(sheet);
+
+        // Recorrer los datos y crear los eventos
+        for (const event of eventsData) {
+            await Event.create({
+                title: event.title,
+                description: event.description,
+                date: event.date,
+                location: event.location,
+                organizerId: event.organizerId
+            });
+        }
+
+        res.status(200).json({ message: 'Eventos cargados exitosamente' });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
