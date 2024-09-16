@@ -3,6 +3,7 @@ const Atendee = require('../models/atendeeModel');
 const connection = require('../config/database');
 
 exports.getAllAtendee = async (req, res) => {
+    console.log("Llamo a getAtendee");
     try {
         
         const Atendees = await Atendee.findAll({
@@ -41,12 +42,12 @@ exports.updateAtendee = async (req, res) => {
 
 exports.createAtendee = async (req, res) => {
     try {
-        const { user_id, atendee_id, registration_date } = req.body;
+        const { user_id, event_id, registration_date } = req.body;
 
        
         const newAtendee = await Atendee.create({
             user_id,
-            atendee_id,
+            event_id,
             registration_date,
             
         });

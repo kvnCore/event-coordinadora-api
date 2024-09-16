@@ -13,7 +13,7 @@ const app = express();
 app.use(express.json());
 
 // Rutas
-app.use('/api/events', eventRoutes);
+app.use('/api', eventRoutes);
 
 // Manejo básico de errores
 app.use((err, req, res, next) => {

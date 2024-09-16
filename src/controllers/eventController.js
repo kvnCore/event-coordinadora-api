@@ -1,20 +1,57 @@
 // src/controllers/eventController.js
+require('dotenv').config();
 const Event = require('../models/eventModel');
 const connection = require('../config/database');
 
 
 exports.getAllEvents = async (req, res) => {
     try {
-        
-        const events = await Event.findAll({
-            //include: ['organizer']  
-        });
+        const events = await Event.findAll();
 
-        res.status(200).json(events);
+        
+        const eventsWithSites = await Promise.all(events.map(async (event) => {
+            try {
+                
+                const response = await fetch('http://localhost:3000/api/events/findNearSites', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ direccion: event.location })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Error en la respuesta de la API: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+
+                
+                const relevantData = data.features.map(feature => ({
+                    id: feature.id,
+                    place_name: feature.place_name,
+                    coordinates: feature.geometry.coordinates
+                }));
+
+                
+                return {
+                    ...event.toJSON(),
+                    nearbySites: relevantData
+                };
+            } catch (error) {
+                console.error(`Error fetching sites for event ${event.id}: ${error.message}`);
+                return {
+                    ...event.toJSON(),
+                    nearbySites: []
+                };
+            }
+        }));
+
+        res.status(200).json(eventsWithSites);
     } catch (error) {
-        res.status(500).json({ message: error.message });  
+        res.status(500).json({ message: error.message });
     }
 };
+
+
 
 exports.getEventById = async (req, res) => {
     try {
@@ -22,7 +59,7 @@ exports.getEventById = async (req, res) => {
 
         
         const event = await Event.findByPk(id, {
-            include: ['organizer'] 
+            //include: ['organizer'] 
         });
 
         if (!event) {
@@ -103,21 +140,23 @@ exports.deleteEvent = async (req, res) => {
 };
 
 exports.findNearSites = async (req, res) => {
-    const accessToken = 'pk.eyJ1Ijoia3ZuY29yZSIsImEiOiJjbTEzd2lnbXEwdG9mMmxwdzdxZ2Fhb2dtIn0.3_jDppQDQH5_4aUs5pErng';
+    const accessToken = process.env.MAP_BOX_KEY;
     const address = req.body.direccion;
-    fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${address}.json?access_token=${accessToken}`)
+    const encodedAddress = encodeURIComponent(address);
+    console.log("URI Adress", encodedAddress);
+    fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodedAddress}.json?access_token=${accessToken}`)
     .then(response => response.json())
     .then(data => {
         const [longitude, latitude] = data.features[0].center;
 
-        return fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${longitude},${latitude}.json?access_token=${accessToken}&proximity=${longitude},${latitude}&limit=10&type=poi`);
+        return fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${longitude},${latitude}.json?access_token=${accessToken}&proximity=${longitude},${latitude}&limit=poi`);
     })
     .then(response => response.json())
     .then(data => {
-        console.log('Lugares Cercanos:', data);
+        res.send(data);
     })
     .catch(error => {
-        console.error('Error:', error);
+        res.error({'Error':error});
     });
 
 }
