@@ -2,7 +2,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
-const Event = sequelize.define('attendee', {
+const Atendee = sequelize.define('attendee', {
     user_id: {
         type: DataTypes.STRING,
         allowNull: false
@@ -18,4 +18,4 @@ const Event = sequelize.define('attendee', {
     
 });
 
-module.exports = Event;
+module.exports = Atendee;

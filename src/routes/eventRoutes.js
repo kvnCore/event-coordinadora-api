@@ -6,12 +6,14 @@ const atendeeController = require('../controllers/atendeeController');
 
 //Rutas para CRUD de eventos
 
-router.post('/events/', eventController.createEvent);
-router.get('/events/', eventController.getAllEvents);
-router.get('/events/:id', eventController.getEventById);
-router.put('/events/:id', eventController.updateEvent);
-router.delete('/events/:id', eventController.deleteEvent);
+router.post('/events/create', eventController.createEvent);
+router.get('/events/getall', eventController.getAllEvents);
+router.get('/events/getbyid/:id', eventController.getEventById);
+router.put('/events/update/:id', eventController.updateEvent);
+router.delete('/events/delete/:id', eventController.deleteEvent);
 router.post('/events/findNearSites', eventController.findNearSites);
+router.get('/events/attendanceByDay', eventController.getAttendanceByDay);
+
 
 //Rutas para CRUD de Asistentes
 

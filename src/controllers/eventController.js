@@ -1,6 +1,7 @@
 // src/controllers/eventController.js
 require('dotenv').config();
 const Event = require('../models/eventModel');
+const Atendee = require('../models/atendeeModel'); 
 const connection = require('../config/database');
 
 
@@ -12,7 +13,7 @@ exports.getAllEvents = async (req, res) => {
         const eventsWithSites = await Promise.all(events.map(async (event) => {
             try {
                 
-                const response = await fetch('http://localhost:3000/api/events/findNearSites', {
+                const response = await fetch(process.env.FETCH_URL_ADRESS+'/api/events/findNearSites', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ direccion: event.location })
@@ -56,21 +57,50 @@ exports.getAllEvents = async (req, res) => {
 exports.getEventById = async (req, res) => {
     try {
         const { id } = req.params; 
-
         
-        const event = await Event.findByPk(id, {
-            //include: ['organizer'] 
-        });
+        const event = await Event.findByPk(id);
 
         if (!event) {
             return res.status(404).json({ message: 'Evento no encontrado' });
         }
 
-        res.status(200).json(event);
+        try {
+            const response = await fetch('http://localhost:3000/api/events/findNearSites', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ location: event.location })
+            });
+
+            if (!response.ok) {
+                throw new Error(`Error en la respuesta de la API: ${response.statusText}`);
+            }
+
+            const data = await response.json();
+
+            const relevantData = data.features.map(feature => ({
+                id: feature.id,
+                place_name: feature.place_name,
+                coordinates: feature.geometry.coordinates
+            }));
+
+            res.status(200).json({
+                ...event.toJSON(),
+                nearbySites: relevantData
+            });
+
+        } catch (error) {
+            console.error(`Error fetching nearby sites for event ${id}: ${error.message}`);
+            res.status(200).json({
+                ...event.toJSON(),
+                nearbySites: []
+            });
+        }
+
     } catch (error) {
-        res.status(500).json({ message: error.message }); 
+        res.status(500).json({ message: error.message });
     }
 };
+
 
 exports.createEvent = async (req, res) => {
     try {
@@ -158,6 +188,60 @@ exports.findNearSites = async (req, res) => {
     .catch(error => {
         res.error({'Error':error});
     });
-
 }
 
+exports.getAttendanceByDay = async (req, res) => {
+    console.log("Entro a attendace by day");
+    try {
+        // Obtener todas las asistencias (Atendees) de la base de datos
+        const atendees = await Atendee.findAll({
+            //include: Event,  // Incluye los eventos relacionados
+        });
+
+        // Inicializamos un objeto para contar los asistentes por día
+        const attendanceByDay = {
+            Monday: 0,
+            Tuesday: 0,
+            Wednesday: 0,
+            Thursday: 0,
+            Friday: 0,
+            Saturday: 0,
+            Sunday: 0,
+        };
+
+        // Iteramos sobre cada asistente y calculamos el día de la semana de su registro
+        atendees.forEach(atendee => {
+            const registrationDate = new Date(atendee.registration_date);
+            const dayOfWeek = registrationDate.getDay();  // 0 es domingo, 6 es sábado
+
+            switch (dayOfWeek) {
+                case 0:
+                    attendanceByDay.Sunday++;
+                    break;
+                case 1:
+                    attendanceByDay.Monday++;
+                    break;
+                case 2:
+                    attendanceByDay.Tuesday++;
+                    break;
+                case 3:
+                    attendanceByDay.Wednesday++;
+                    break;
+                case 4:
+                    attendanceByDay.Thursday++;
+                    break;
+                case 5:
+                    attendanceByDay.Friday++;
+                    break;
+                case 6:
+                    attendanceByDay.Saturday++;
+                    break;
+            }
+        });
+
+        // Devolvemos los resultados en formato JSON
+        res.status(200).json(attendanceByDay);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
