@@ -251,7 +251,7 @@ exports.getAttendanceByDay = async (req, res) => {
 exports.uploadEventsFromExcel = async (req, res) => {
     try {
         // Asegúrate de que el archivo ha sido subido por multer
-        const filePath = path.join(__dirname, '../uploads', "req.file.filename");
+        const filePath = path.join(__dirname, '../uploads', req.file.filename);
 
         // Leer el archivo Excel
         const workbook = xlsx.readFile(filePath);
