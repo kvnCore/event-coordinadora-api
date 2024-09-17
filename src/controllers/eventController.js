@@ -188,7 +188,8 @@ exports.findNearSites = async (req, res) => {
         res.send(data);
     })
     .catch(error => {
-        res.error({'Error':error});
+        console.log("error nearbysites: ",error);
+        res.send({'Error':error});
     });
 }
 

@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  api:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - JWT_SECRET=your_jwt_secret
+      - DB_HOST=db
+      - DB_USER=coordinadora
+      - DB_PASS=c00rd1n4d0r4
+      - DB_NAME=eventdb
+    depends_on:
+      - db
+    deploy:
+      replicas: 5  # Configuración para que corran 5 réplicas
+      restart_policy:
+        condition: on-failure
+    volumes:
+      - .:/usr/src/app
+    networks:
+      - app-network
+
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: eventdb
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - app-network
+
+volumes:
+  db_data:
+
+networks:
+  app-network:
+    driver: bridge
