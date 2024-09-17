@@ -1,4 +1,4 @@
-// src/routes/atendeeRoutes.js
+
 const express = require('express');
 const router = express.Router();
 const atendeeController = require('../controllers/atendeeController');
