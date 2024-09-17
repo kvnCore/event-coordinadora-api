@@ -27,7 +27,7 @@ const authController = require('../controllers/authController');
 
 /**
  * @swagger
- * /api/register:
+ * /api/auth/register:
  *   post:
  *     summary: Registrar un nuevo usuario
  *     tags: [Autenticación]
@@ -47,7 +47,7 @@ router.post('/register', authController.register);
 
 /**
  * @swagger
- * /api/login:
+ * /api/auth/login:
  *   post:
  *     summary: Iniciar sesión para obtener un token JWT
  *     tags: [Autenticación]
