@@ -178,9 +178,9 @@ Puedes cargar eventos en lote desde un archivo **Excel**.
 
 1. Crea un archivo **Excel** con las siguientes columnas (En '../src/templates/' encontrarás una plantilla vacia):
 
-   | title          | description      | date       | location           | organizerId |
-   |----------------|------------------|------------|--------------------|-------------|
-   | Concierto Rock | Música en vivo    | 2024-09-30 | Auditorio Nacional | 1           |
+   | title          | description      | date                 | location           | organizerId |
+   |----------------|------------------|----------------------|--------------------|-------------|
+   | Concierto Rock | Música en vivo   | 2025-03-04 00:00:00  | Auditorio Nacional | 1           |
 
 2. Sube el archivo usando el endpoint:
 
