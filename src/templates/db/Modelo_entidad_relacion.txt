@@ -1,0 +1,25 @@
++-------------------+        +--------------------+         +--------------------+
+|       User        |        |       Event        |         |      Attendee       |
+|-------------------|        |--------------------|         |--------------------|
+| ID (PK)           |  1     | ID (PK)            |   1     | ID (PK)             |
+| Nombre            |--------| Título             |---------| Usuario (FK ->      |
+| Email             |        | Descripción        |     M   |     User.ID)        |
+| Contraseña        |        | Fecha              |         | Evento (FK ->       |
+| Rol               |        | Ubicación          |         |     Event.ID)       |
++-------------------+        | Organizador        |         | Fecha de Registro   |
+                             | (FK -> User.ID)    |         +--------------------+
+                             +--------------------+
+
+      | 1                                 1 |                                    1
+      |-------------------------------------|-----------------------------------|  
+      |                                     |                                   |
+                                   +--------------------+             +-------------------+
+                                   |     FileUpload     |             |   User_Event (M-M) |
+                                   |--------------------|             |-------------------|
+                                   | ID (PK)            |             | User_ID (FK)       |
+                                   | Nombre del Archivo |             | Event_ID (FK)      |
+                                   | URL del Archivo    |             +-------------------+
+                                   | Fecha de Subida    |      
+                                   | Evento (FK ->      |
+                                   |    Event.ID)       |
+                                   +--------------------+
