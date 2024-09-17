@@ -149,7 +149,7 @@ router.delete('/events/delete/:id', authMiddleware, eventController.deleteEvent)
  * @swagger
  * /api/events/findNearSites:
  *   post:
- *     summary: Buscar sitios cercanos a un evento
+ *     summary: Buscar sitios cercanos a un evento (Esta api se puede usar de forma individual o ya viene complementada con traer los eventos)
  *     tags: [Eventos]
  *     requestBody:
  *       required: true
