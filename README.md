@@ -60,6 +60,7 @@ Esta es una API RESTful para la gestión de eventos y asistentes, construida con
    ```sql
    CREATE DATABASE eventdb;
    ```
+    **En la ruta './src/templates/db' encontrarás un script de base de datos junto a su modelo de entidad - relación**
 
 5. **Iniciar la Aplicación**:
 
