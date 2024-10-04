@@ -1,6 +1,6 @@
 
 
-# API RESTful para Gestión de Eventos - Prueba técnica Coordinadora
+# API RESTful para Gestión de Eventos
 
 Esta es una API RESTful para la gestión de eventos y asistentes, construida con **Node.js**, **Express**, **Sequelize**, y **MySQL**. La API permite gestionar eventos y asistentes, y está documentada con **Swagger**. Además, la aplicación está **dockerizada** con soporte para múltiples réplicas.
 
